@@ -20,6 +20,15 @@ import 'RAN/view/ran_bts_detail_screen.dart';
 import 'RAN/view/ran_alerts_screen.dart';
 import 'RAN/view/ran_profile_screen.dart';
 import 'RAN/view/ran_bot_view.dart';
+import 'CORE/controller/core_controller.dart';
+import 'CORE/controller/core_profile_controller.dart';
+import 'CORE/view/core_dashboard_screen.dart';
+import 'CORE/view/core_topology_screen.dart';
+import 'CORE/view/core_elements_list_screen.dart';
+import 'CORE/view/core_element_detail_screen.dart';
+import 'CORE/view/core_analytics_screen.dart';
+import 'CORE/view/core_services_screen.dart';
+import 'CORE/view/core_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +50,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RANController()),
         ChangeNotifierProvider(create: (_) => RANProfileController()),
         ChangeNotifierProvider(create: (_) => RANBotController()),
+        ChangeNotifierProvider(create: (_) => CoreController()),
+        ChangeNotifierProvider(create: (_) => CoreProfileController()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -149,11 +160,13 @@ class MyApp extends StatelessWidget {
           '/ran-alerts': (context) => const RANAlertsScreen(),
           '/ran-profile': (context) => const RANProfileScreen(),
           '/ran-bot': (context) => const RANBotView(),
-          AppRoutes.coreDashboard: (context) => const DashboardScreen(
-            title: 'CORE Dashboard',
-            icon: Icons.hub,
-            color: DarkThemeColors.infoBright,
-          ),
+          AppRoutes.coreDashboard: (context) => const CoreDashboardScreen(),
+          '/core-topology': (context) => const CoreTopologyScreen(),
+          '/core-elements-list': (context) => const CoreElementsListScreen(),
+          '/core-element-detail': (context) => const CoreElementDetailScreen(),
+          '/core-analytics': (context) => const CoreAnalyticsScreen(),
+          '/core-services': (context) => const CoreServicesScreen(),
+          '/core-profile': (context) => const CoreProfileScreen(),
           AppRoutes.ipDashboard: (context) => const DashboardScreen(
             title: 'IP Transport Dashboard',
             icon: Icons.router,
