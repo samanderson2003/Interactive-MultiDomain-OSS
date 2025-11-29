@@ -39,6 +39,13 @@ import 'IP/view/ip_links_screen.dart';
 import 'IP/view/ip_monitoring_screen.dart';
 import 'IP/view/ip_alerts_screen.dart';
 import 'IP/view/ip_bot_screen.dart';
+import 'NOC/controller/noc_controller.dart';
+import 'NOC/controller/noc_profile_controller.dart';
+import 'NOC/view/noc_dashboard_screen.dart';
+import 'NOC/view/noc_alarm_table_screen.dart';
+import 'NOC/view/noc_alarm_detail_screen.dart';
+import 'NOC/view/noc_statistics_screen.dart';
+import 'NOC/view/noc_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +72,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CoreBotController()),
         ChangeNotifierProvider(create: (_) => IPController()),
         ChangeNotifierProvider(create: (_) => IPBotController()),
+        ChangeNotifierProvider(create: (_) => NOCController()),
+        ChangeNotifierProvider(create: (_) => NOCProfileController()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -187,11 +196,11 @@ class MyApp extends StatelessWidget {
           '/ip-monitoring': (context) => const IPMonitoringScreen(),
           '/ip-alerts': (context) => const IPAlertsScreen(),
           '/ip-bot': (context) => const IPBotScreen(),
-          AppRoutes.nocDashboard: (context) => const DashboardScreen(
-            title: 'NOC Dashboard',
-            icon: Icons.monitor_heart,
-            color: DarkThemeColors.chartPink,
-          ),
+          AppRoutes.nocDashboard: (context) => const NOCDashboardScreen(),
+          '/noc-alarm-table': (context) => const NOCAlarmTableScreen(),
+          '/noc-alarm-detail': (context) => const NOCAlarmDetailScreen(),
+          '/noc-statistics': (context) => const NOCStatisticsScreen(),
+          '/noc-profile': (context) => const NOCProfileScreen(),
           AppRoutes.analystDashboard: (context) => const DashboardScreen(
             title: 'Network Analyst Dashboard',
             icon: Icons.analytics,
