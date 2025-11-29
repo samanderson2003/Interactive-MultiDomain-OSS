@@ -1,0 +1,17 @@
+class IPBotMessage {
+  final String id;
+  final String content;
+  final bool isUser;
+  final DateTime timestamp;
+  final MessageType type;
+
+  IPBotMessage({
+    required this.id,
+    required this.content,
+    required this.isUser,
+    required this.timestamp,
+    this.type = MessageType.text,
+  });
+}
+
+enum MessageType { text, command, alert, suggestion }

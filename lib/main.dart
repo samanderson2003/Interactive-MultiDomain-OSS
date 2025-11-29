@@ -22,6 +22,7 @@ import 'RAN/view/ran_profile_screen.dart';
 import 'RAN/view/ran_bot_view.dart';
 import 'CORE/controller/core_controller.dart';
 import 'CORE/controller/core_profile_controller.dart';
+import 'CORE/controller/core_bot_controller.dart';
 import 'CORE/view/core_dashboard_screen.dart';
 import 'CORE/view/core_topology_screen.dart';
 import 'CORE/view/core_elements_list_screen.dart';
@@ -29,6 +30,15 @@ import 'CORE/view/core_element_detail_screen.dart';
 import 'CORE/view/core_analytics_screen.dart';
 import 'CORE/view/core_services_screen.dart';
 import 'CORE/view/core_profile_screen.dart';
+import 'CORE/view/core_bot_screen.dart';
+import 'IP/controller/ip_controller.dart';
+import 'IP/controller/ip_bot_controller.dart';
+import 'IP/view/ip_dashboard_screen.dart';
+import 'IP/view/ip_topology_screen.dart';
+import 'IP/view/ip_links_screen.dart';
+import 'IP/view/ip_monitoring_screen.dart';
+import 'IP/view/ip_alerts_screen.dart';
+import 'IP/view/ip_bot_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +62,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RANBotController()),
         ChangeNotifierProvider(create: (_) => CoreController()),
         ChangeNotifierProvider(create: (_) => CoreProfileController()),
+        ChangeNotifierProvider(create: (_) => CoreBotController()),
+        ChangeNotifierProvider(create: (_) => IPController()),
+        ChangeNotifierProvider(create: (_) => IPBotController()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -167,11 +180,13 @@ class MyApp extends StatelessWidget {
           '/core-analytics': (context) => const CoreAnalyticsScreen(),
           '/core-services': (context) => const CoreServicesScreen(),
           '/core-profile': (context) => const CoreProfileScreen(),
-          AppRoutes.ipDashboard: (context) => const DashboardScreen(
-            title: 'IP Transport Dashboard',
-            icon: Icons.router,
-            color: DarkThemeColors.warningBright,
-          ),
+          '/core-bot': (context) => const CoreBotScreen(),
+          AppRoutes.ipDashboard: (context) => const IPDashboardScreen(),
+          '/ip-topology': (context) => const IPTopologyScreen(),
+          '/ip-links': (context) => const IPLinksScreen(),
+          '/ip-monitoring': (context) => const IPMonitoringScreen(),
+          '/ip-alerts': (context) => const IPAlertsScreen(),
+          '/ip-bot': (context) => const IPBotScreen(),
           AppRoutes.nocDashboard: (context) => const DashboardScreen(
             title: 'NOC Dashboard',
             icon: Icons.monitor_heart,
