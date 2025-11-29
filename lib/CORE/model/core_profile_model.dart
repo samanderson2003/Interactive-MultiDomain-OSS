@@ -49,7 +49,7 @@ class UserProfile {
       name: json['name'],
       role: UserRole.values.firstWhere(
         (e) => e.toString() == json['role'],
-        orElse: () => UserRole.NETWORK_ANALYST,
+        orElse: () => UserRole.RAN_ENGINEER,
       ),
       employeeId: json['employeeId'],
       location: json['location'],

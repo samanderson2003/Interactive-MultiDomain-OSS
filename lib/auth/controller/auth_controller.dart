@@ -258,8 +258,6 @@ class AuthController extends ChangeNotifier {
         return AppRoutes.ipDashboard;
       case UserRole.NOC_MANAGER:
         return AppRoutes.nocDashboard;
-      case UserRole.NETWORK_ANALYST:
-        return AppRoutes.analystDashboard;
     }
   }
 

@@ -7,7 +7,6 @@ import 'auth/controller/auth_controller.dart';
 import 'auth/view/splash_screen.dart';
 import 'auth/view/auth_view.dart';
 import 'auth/view/signup_view.dart';
-import 'views/dashboard_screen.dart';
 import 'utils/constants.dart';
 import 'RAN/controller/ran_controller.dart';
 import 'RAN/controller/ran_profile_controller.dart';
@@ -46,6 +45,12 @@ import 'NOC/view/noc_alarm_table_screen.dart';
 import 'NOC/view/noc_alarm_detail_screen.dart';
 import 'NOC/view/noc_statistics_screen.dart';
 import 'NOC/view/noc_profile_screen.dart';
+import 'ADMIN/controller/admin_controller.dart';
+import 'ADMIN/controller/admin_user_controller.dart';
+import 'ADMIN/controller/admin_network_controller.dart';
+import 'ADMIN/controller/admin_analytics_controller.dart';
+import 'ADMIN/controller/admin_system_controller.dart';
+import 'ADMIN/view/admin_main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +79,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => IPBotController()),
         ChangeNotifierProvider(create: (_) => NOCController()),
         ChangeNotifierProvider(create: (_) => NOCProfileController()),
+        ChangeNotifierProvider(create: (_) => AdminController()),
+        ChangeNotifierProvider(create: (_) => AdminUserController()),
+        ChangeNotifierProvider(create: (_) => AdminNetworkController()),
+        ChangeNotifierProvider(create: (_) => AdminAnalyticsController()),
+        ChangeNotifierProvider(create: (_) => AdminSystemController()),
+        ChangeNotifierProvider(create: (_) => AdminNetworkController()),
+        ChangeNotifierProvider(create: (_) => AdminAnalyticsController()),
+        ChangeNotifierProvider(create: (_) => AdminSystemController()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -169,11 +182,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.splash: (context) => const SplashScreen(),
           AppRoutes.login: (context) => const LoginScreen(),
           '/signup': (context) => const SignupScreen(),
-          AppRoutes.adminDashboard: (context) => const DashboardScreen(
-            title: 'Admin Dashboard',
-            icon: Icons.admin_panel_settings,
-            color: DarkThemeColors.errorBright,
-          ),
+          AppRoutes.adminDashboard: (context) => const AdminMainScreen(),
           AppRoutes.ranDashboard: (context) => const RANDashboardScreen(),
           '/ran-map': (context) => const RANMapScreen(),
           '/ran-analytics': (context) => const RANAnalyticsScreen(),
@@ -201,11 +210,6 @@ class MyApp extends StatelessWidget {
           '/noc-alarm-detail': (context) => const NOCAlarmDetailScreen(),
           '/noc-statistics': (context) => const NOCStatisticsScreen(),
           '/noc-profile': (context) => const NOCProfileScreen(),
-          AppRoutes.analystDashboard: (context) => const DashboardScreen(
-            title: 'Network Analyst Dashboard',
-            icon: Icons.analytics,
-            color: DarkThemeColors.accentLight,
-          ),
         },
       ),
     );

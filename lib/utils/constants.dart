@@ -8,14 +8,7 @@ class AppConstants {
 }
 
 // User Roles
-enum UserRole {
-  ADMIN,
-  RAN_ENGINEER,
-  CORE_ENGINEER,
-  IP_ENGINEER,
-  NOC_MANAGER,
-  NETWORK_ANALYST,
-}
+enum UserRole { ADMIN, RAN_ENGINEER, CORE_ENGINEER, IP_ENGINEER, NOC_MANAGER }
 
 // Role Extensions
 extension UserRoleExtension on UserRole {
@@ -31,8 +24,6 @@ extension UserRoleExtension on UserRole {
         return 'IP Transport Engineer';
       case UserRole.NOC_MANAGER:
         return 'NOC Manager';
-      case UserRole.NETWORK_ANALYST:
-        return 'Network Analyst';
     }
   }
 
@@ -154,7 +145,6 @@ class AppRoutes {
   static const String coreDashboard = '/core-dashboard';
   static const String ipDashboard = '/ip-dashboard';
   static const String nocDashboard = '/noc-dashboard';
-  static const String analystDashboard = '/analyst-dashboard';
 }
 
 // Storage Keys

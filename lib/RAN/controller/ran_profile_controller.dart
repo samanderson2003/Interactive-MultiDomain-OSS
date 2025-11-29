@@ -118,14 +118,6 @@ class RANProfileController extends ChangeNotifier {
           'View Analytics',
           'Team Management',
         ];
-      case UserRole.NETWORK_ANALYST:
-        return [
-          'View All Data',
-          'Advanced Analytics',
-          'Export Reports',
-          'Generate Reports',
-          'View Analytics',
-        ];
     }
   }
 
