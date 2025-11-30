@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../utils/constants.dart';
 import '../../controller/admin_user_controller.dart';
 import '../../model/admin_user_model.dart';
+import 'admin_add_edit_user_screen.dart';
 
 class AdminUsersListScreen extends StatefulWidget {
   const AdminUsersListScreen({super.key});
@@ -99,7 +100,18 @@ class _AdminUsersListScreenState extends State<AdminUsersListScreen> {
                     ),
                     const SizedBox(width: 12),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const AdminAddEditUserScreen(),
+                          ),
+                        );
+                        if (context.mounted) {
+                          context.read<AdminUserController>().loadUsers();
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFef4444),
                         padding: const EdgeInsets.symmetric(
@@ -158,8 +170,17 @@ class _AdminUsersListScreenState extends State<AdminUsersListScreen> {
                       _buildSearchBar(controller),
                       const SizedBox(width: 12),
                       ElevatedButton.icon(
-                        onPressed: () {
-                          // Navigate to add user page
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const AdminAddEditUserScreen(),
+                            ),
+                          );
+                          if (context.mounted) {
+                            context.read<AdminUserController>().loadUsers();
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFef4444),
@@ -528,8 +549,17 @@ class _AdminUsersListScreenState extends State<AdminUsersListScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            onPressed: () {
-              // Edit user
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      AdminAddEditUserScreen(userId: user.uid),
+                ),
+              );
+              if (context.mounted) {
+                controller.loadUsers();
+              }
             },
             icon: const Icon(Icons.edit_outlined, size: 18),
             tooltip: 'Edit',

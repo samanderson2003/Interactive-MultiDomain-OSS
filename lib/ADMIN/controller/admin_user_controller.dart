@@ -125,6 +125,7 @@ class AdminUserController extends ChangeNotifier {
 
         // Create user document in Firestore
         await _firestore.collection('users').doc(uid).set({
+          'uid': uid,
           'name': name,
           'email': email,
           'role': role.value,
@@ -135,6 +136,11 @@ class AdminUserController extends ChangeNotifier {
           'isActive': true,
           'createdAt': FieldValue.serverTimestamp(),
           'lastLogin': FieldValue.serverTimestamp(),
+          'preferences': {
+            'theme': 'dark',
+            'notifications': true,
+            'language': 'en',
+          },
         });
 
         await loadUsers();

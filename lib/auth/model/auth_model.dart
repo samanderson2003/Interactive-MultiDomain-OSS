@@ -67,6 +67,8 @@ class UserModel {
   // Create UserModel from Firestore DocumentSnapshot
   factory UserModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    // Ensure uid is always from document ID
+    data['uid'] = doc.id;
     return UserModel.fromMap(data);
   }
 

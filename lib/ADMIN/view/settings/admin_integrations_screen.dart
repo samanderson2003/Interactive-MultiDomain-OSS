@@ -203,44 +203,98 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
           sum + int.parse((i['apiCalls'] as String).replaceAll(',', '')),
     );
 
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            'Total Integrations',
-            '${_integrations.length}',
-            Icons.extension,
-            const Color(0xFF3b82f6),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            'Connected',
-            '$connected',
-            Icons.check_circle,
-            const Color(0xFF10b981),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            'Disconnected',
-            '$disconnected',
-            Icons.cancel,
-            const Color(0xFFef4444),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            'API Calls (24h)',
-            '${(totalApiCalls / 1000).toStringAsFixed(1)}K',
-            Icons.api,
-            const Color(0xFF8b5cf6),
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 800) {
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      'Total',
+                      '${_integrations.length}',
+                      Icons.extension,
+                      const Color(0xFF3b82f6),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      'Connected',
+                      '$connected',
+                      Icons.check_circle,
+                      const Color(0xFF10b981),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      'Disconnected',
+                      '$disconnected',
+                      Icons.cancel,
+                      const Color(0xFFef4444),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      'API Calls',
+                      '${(totalApiCalls / 1000).toStringAsFixed(1)}K',
+                      Icons.api,
+                      const Color(0xFF8b5cf6),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                'Total Integrations',
+                '${_integrations.length}',
+                Icons.extension,
+                const Color(0xFF3b82f6),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'Connected',
+                '$connected',
+                Icons.check_circle,
+                const Color(0xFF10b981),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'Disconnected',
+                '$disconnected',
+                Icons.cancel,
+                const Color(0xFFef4444),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'API Calls (24h)',
+                '${(totalApiCalls / 1000).toStringAsFixed(1)}K',
+                Icons.api,
+                const Color(0xFF8b5cf6),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -287,19 +341,31 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
   }
 
   Widget _buildIntegrationsGrid(List<Map<String, dynamic>> integrations) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1.5,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-      ),
-      itemCount: integrations.length,
-      itemBuilder: (context, index) {
-        final integration = integrations[index];
-        return _buildIntegrationCard(integration);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int crossAxisCount = 3;
+        if (constraints.maxWidth < 1200) {
+          crossAxisCount = 2;
+        }
+        if (constraints.maxWidth < 800) {
+          crossAxisCount = 1;
+        }
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: crossAxisCount == 1 ? 2.5 : 1.3,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: integrations.length,
+          itemBuilder: (context, index) {
+            final integration = integrations[index];
+            return _buildIntegrationCard(integration);
+          },
+        );
       },
     );
   }
@@ -319,6 +385,7 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -335,34 +402,42 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
                 ),
               ),
               const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: statusColor),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: statusColor),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      integration['status'],
-                      style: GoogleFonts.poppins(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: statusColor,
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          integration['status'],
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: statusColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -375,63 +450,74 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
           Text(
             integration['category'],
             style: GoogleFonts.poppins(fontSize: 11, color: Colors.white60),
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 8),
-          Text(
-            integration['description'],
-            style: GoogleFonts.poppins(fontSize: 12, color: Colors.white70),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              integration['description'],
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.white70),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           const Spacer(),
           const Divider(color: Color(0xFF21262d), height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Last Sync',
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      color: Colors.white60,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Last Sync',
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        color: Colors.white60,
+                      ),
                     ),
-                  ),
-                  Text(
-                    integration['lastSync'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                    Text(
+                      integration['lastSync'],
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'API Calls',
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      color: Colors.white60,
+              const SizedBox(width: 8),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'API Calls',
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        color: Colors.white60,
+                      ),
                     ),
-                  ),
-                  Text(
-                    integration['apiCalls'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                    Text(
+                      integration['apiCalls'],
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -445,7 +531,10 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3b82f6),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -456,6 +545,7 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
@@ -467,6 +557,8 @@ class _AdminIntegrationsScreenState extends State<AdminIntegrationsScreen> {
                   // Test integration
                 },
                 tooltip: 'Test Connection',
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(),
               ),
             ],
           ),

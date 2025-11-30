@@ -22,10 +22,13 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
   final _employeeIdController = TextEditingController();
   final _locationController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   UserRole _selectedRole = UserRole.RAN_ENGINEER;
   bool _isActive = true;
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void initState() {
@@ -105,33 +108,75 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
                         'Password',
                         _passwordController,
                         Icons.lock,
-                        obscureText: true,
+                        obscureText: _obscurePassword,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.white60,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                        'Confirm Password',
+                        _confirmPasswordController,
+                        Icons.lock_outline,
+                        obscureText: _obscureConfirmPassword,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureConfirmPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.white60,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscureConfirmPassword =
+                                !_obscureConfirmPassword,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm your password';
+                          }
+                          if (value != _passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                     ],
                   ),
                 _buildTextField('Phone', _phoneController, Icons.phone),
                 const SizedBox(height: 16),
-                _buildTextField(
-                  'Employee ID',
-                  _employeeIdController,
-                  Icons.badge,
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  'Department',
-                  _departmentController,
-                  Icons.business,
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  'Location',
-                  _locationController,
-                  Icons.location_on,
-                ),
-                const SizedBox(height: 16),
                 _buildRoleDropdown(),
                 const SizedBox(height: 16),
+                if (isEdit) ...[
+                  _buildTextField(
+                    'Employee ID',
+                    _employeeIdController,
+                    Icons.badge,
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    'Department',
+                    _departmentController,
+                    Icons.business,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    'Location',
+                    _locationController,
+                    Icons.location_on,
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 _buildStatusToggle(),
                 const SizedBox(height: 32),
                 Row(
@@ -193,6 +238,8 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
     IconData icon, {
     bool obscureText = false,
     bool enabled = true,
+    Widget? suffixIcon,
+    String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,6 +260,7 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
           style: GoogleFonts.poppins(color: Colors.white),
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: Colors.white60),
+            suffixIcon: suffixIcon,
             filled: true,
             fillColor: const Color(0xFF161b22),
             border: OutlineInputBorder(
@@ -227,13 +275,25 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Color(0xFF3b82f6), width: 2),
             ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF21262d)),
+            ),
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'This field is required';
-            }
-            return null;
-          },
+          validator:
+              validator ??
+              (value) {
+                if (value == null || value.isEmpty) {
+                  return 'This field is required';
+                }
+                if (label == 'Email' && !value.contains('@')) {
+                  return 'Please enter a valid email';
+                }
+                if (label == 'Password' && value.length < 6) {
+                  return 'Password must be at least 6 characters';
+                }
+                return null;
+              },
         ),
       ],
     );
@@ -329,25 +389,33 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
 
       if (widget.userId == null) {
         // Create new user
-        await controller.createUser(
-          email: _emailController.text,
+        final success = await controller.createUser(
+          email: _emailController.text.trim(),
           password: _passwordController.text,
-          name: _nameController.text,
+          name: _nameController.text.trim(),
           role: _selectedRole,
-          phone: _phoneController.text,
-          department: _departmentController.text,
-          location: _locationController.text,
+          phone: _phoneController.text.trim(),
+          department: '', // Auto-generated by system
+          location: 'India', // Default location
         );
+
+        if (!success) {
+          throw Exception('Failed to create user');
+        }
       } else {
         // Update existing user
-        await controller.updateUser(
+        final success = await controller.updateUser(
           uid: widget.userId!,
-          name: _nameController.text,
-          phone: _phoneController.text,
-          department: _departmentController.text,
-          location: _locationController.text,
+          name: _nameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          department: _departmentController.text.trim(),
+          location: _locationController.text.trim(),
           role: _selectedRole,
         );
+
+        if (!success) {
+          throw Exception('Failed to update user');
+        }
       }
 
       if (mounted) {
@@ -387,6 +455,7 @@ class _AdminAddEditUserScreenState extends State<AdminAddEditUserScreen> {
     _employeeIdController.dispose();
     _locationController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 }
